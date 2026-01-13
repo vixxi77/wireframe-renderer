@@ -29,12 +29,18 @@ float vertices[8][3] = {
 	-0.25,-0.25,-0.25
 };
 
+float edges [12][2] = {
+    {0, 1}, {1, 3}, {3, 2}, {2, 0},
+    {4, 5}, {5, 7}, {7, 6}, {6, 4},
+    {0, 4}, {1, 5}, {2, 6}, {3, 7}
+};
+
 void initalization(void);
 void cleanup(void);
 void clear_screen(void);
 void draw_rectangle(float *x, float *y);
 void screen_coordinate_point_normalized(float *x, float *y);
-void projection(float x, float y, float z);
+void projection(float x, float y, float z, float *screen_x, float *screen_y);
 void translate_z(float *z, float *_delta_z);
 void rotate_xz(float *x, float *y, float angle);
 void frame_animation(void);
@@ -99,19 +105,18 @@ draw_rectangle(float *x, float *y){
 }
 
 void 
-screen_coordinate_point_normalized(float *x, float *y){
-	float _x = (*x + 1) / 2.0 * WINDOW_WIDTH; //didint know literal flaoting point numbers help with such conversions, no need to change everything to floats nice
-	float _y = (1 - (*y + 1) / 2.0) * WINDOW_HEIGHT;
-
-	draw_rectangle(&_x, &_y);
+get_screen_coordinates(float *x, float *y, float *screen_x, float *screen_y){
+	*screen_x = (*x + 1) / 2.0 * WINDOW_WIDTH; //didint know literal flaoting point numbers help with such conversions, no need to change everything to floats nice
+	*screen_y = (1 - (*y + 1) / 2.0) * WINDOW_HEIGHT;
 }
 
-void projection(float x, float y, float z){
+
+
+void projection(float x, float y, float z, float *screen_x, float *screen_y){
 	float _x = x / z;
 	float _y = y / z;	
 
-	screen_coordinate_point_normalized(&_x, &_y);
-
+	get_screen_coordinates(&_x, &_y, screen_x, screen_y);
 }
 
 void
@@ -132,18 +137,39 @@ rotate_xz(float *x, float *z, float angle){
 }
 
 void
+draw_line(float *x1, float *y1,  float *x2, float *y2){
+	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+	SDL_RenderDrawLineF(renderer, *x1, *y1, *x2, *y2);
+}
+
+void
 frame_animation(void){
 	//delta_z += 1.0 * DELTA;
 	angle   += M_PI * DELTA;
 	clear_screen();
-	for(int i = 0; i < sizeof(vertices) / sizeof(vertices[0]); i++){
-		float _x = vertices[i][0];
-		float _y = vertices[i][1];
-		float _z = vertices[i][2];
 
-		rotate_xz(&_x, &_z, angle);
-		translate_z(&_z, &delta_z);
-		projection(_x, _y, _z);
+	for(int i = 0; i < sizeof(edges) / sizeof(edges[0]); i++){
+		int _a = edges[i][0];
+		int _b = edges[i][1];
+
+		float _x1 = vertices[_a][0];
+		float _y1 = vertices[_a][1];
+		float _z1 = vertices[_a][2];
+		rotate_xz(&_x1, &_z1, angle);
+		translate_z(&_z1, &delta_z);
+
+		float screen_x1, screen_y1;
+		projection(_x1, _y1, _z1, &screen_x1, &screen_y1);
+
+		float _x2 = vertices[_b][0];
+		float _y2 = vertices[_b][1];
+		float _z2 = vertices[_b][2];
+		rotate_xz(&_x2, &_z2, angle);
+		translate_z(&_z2, &delta_z);
+
+		float screen_x2, screen_y2;
+		projection(_x2, _y2, _z2, &screen_x2, &screen_y2);
+		draw_line(&screen_x1, &screen_y1, &screen_x2, &screen_y2);
 	}
         SDL_RenderPresent(renderer);
 	SDL_Delay(1000/FPS);
