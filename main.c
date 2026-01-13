@@ -2,12 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WINDOW_WIDTH  900
+#define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 800
+#define POINT_SIZE    10
+#define FPS           60
+#define DELTA         1/FPS
 
 SDL_Window     *window;
 SDL_Event      event;
 SDL_Renderer   *renderer;
+static float delta_z = 0;
 
 void 
 initalization(void){
@@ -49,18 +53,39 @@ clear_screen(void){
 }
 
 void
-draw_rectangle(int *x, int *y, int *size){
-    SDL_Rect rectangle = {*x - (*size / 2), *y - (*size / 2), *size, *size};
+draw_rectangle(float *x, float *y){
+    SDL_Rect rectangle = {
+	    .x = (int)*x - (POINT_SIZE / 2),
+	    .y = (int)*y - (POINT_SIZE / 2),
+	    .w = POINT_SIZE,
+	    .h = POINT_SIZE};
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
     SDL_RenderFillRect(renderer, &rectangle);
 }
 
 void 
-screen_projection_point(int x, int y, int size){
-	int _x = (x + 1) / 2.0 * WINDOW_WIDTH; //didint know literal flaoting point numbers help with such conversions, no need to change everything to floats nice
-	int _y = (y + 1) / 2.0 * WINDOW_HEIGHT;
+screen_coordinate_point_normalized(float *x, float *y){
+	float _x = (*x + 1) / 2.0 * WINDOW_WIDTH; //didint know literal flaoting point numbers help with such conversions, no need to change everything to floats nice
+	float _y = (1 - (*y + 1) / 2.0) * WINDOW_HEIGHT;
 
-	draw_rectangle(&_x, &_y, &size);
+	draw_rectangle(&_x, &_y);
+}
+
+void projection(float x, float y, float z){
+	float _x = x / z;
+	float _y = y / z;	
+
+	screen_coordinate_point_normalized(&_x, &_y);
+
+}
+
+void
+frame_animation(void){
+	delta_z += 1.0 * DELTA;
+	clear_screen();
+	projection(0.5, 0 ,1 + delta_z);
+        SDL_RenderPresent(renderer);
+	SDL_Delay(1000/FPS);
 }
 
 void loop(void){
@@ -73,9 +98,7 @@ void loop(void){
     		    break;
     	    }
         }
-	clear_screen();
-	screen_projection_point(0, 0, 10);
-        SDL_RenderPresent(renderer);
+	frame_animation();
     }
 }
 
