@@ -1,38 +1,3 @@
-/* This is SDL2 Initialization boiler plate
-
-   #include <SDL2/SDL.h>
-   -----------------------------------------------
-    int SDL_Init(Uint32 flags);
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_INIT_AUDIO
-    SDL_INIT_VIDEO
-    SDL_INIT_EVERYTHING
-    -----------------------------------------------
-    SDL_Window *window;
-    window = SDL_CreateWindow(const char *title,
-                              int x, int y, int w,
-                              int h, Uint32 flags);
-    SDL_WINDOWPOS_CENTERED
-    -----------------------------------------------
-    SDL_Renderer *renderer;
-    renderer = SDL_CreateRenderer(SDL_Window * window,
-                             int index, Uint32 flags);
-
-    SDL_SetRenderDrawColor(SDL_Renderer * renderer,
-                   Uint8 r, Uint8 g, Uint8 b,
-                   Uint8 a);
-		   
-    SDL_RenderClear(SDL_Renderer * renderer); SDL_RENDERER_ACCELERATED
-    -----------------------------------------------
-    SDL_Event event;
-    SDL_PollEvent(&event);
-    switch(event.type){
-    case SDL_QUIT:
-    }
-    -----------------------------------------------
-    WIP TO BE CONTINUED!
- */ 
-
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,9 +5,9 @@
 #define WINDOW_WIDTH  900
 #define WINDOW_HEIGHT 800
 
-SDL_Window    *window;
+SDL_Window     *window;
 SDL_Event      event;
-SDL_Renderer  *renderer;
+SDL_Renderer   *renderer;
 
 void 
 initalization(void){
@@ -75,25 +40,43 @@ cleanup(void){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
 
+void
+clear_screen(void){
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+}
+
+void
+draw_rectangle(int *x, int *y, int *size){
+    SDL_Rect rectangle = {*x - (*size / 2), *y - (*size / 2), *size, *size};
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_RenderFillRect(renderer, &rectangle);
+}
+
+void 
+screen_projection_point(int x, int y, int size){
+	int _x = (x + 1) / 2.0 * WINDOW_WIDTH; //didint know literal flaoting point numbers help with such conversions, no need to change everything to floats nice
+	int _y = (y + 1) / 2.0 * WINDOW_HEIGHT;
+
+	draw_rectangle(&_x, &_y, &size);
 }
 
 void loop(void){
-	int run = 1;
-	while(run){
-	    while(SDL_PollEvent(&event)){
-		    switch(event.type){
-		    case SDL_QUIT:
-			    run = 0;
-			    break;
-		    }
-	    }
-	    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	    SDL_RenderClear(renderer);
-	    SDL_RenderPresent(renderer);
-
-	}
-
+    int run = 1;
+    while(run){
+        while(SDL_PollEvent(&event)){
+    	    switch(event.type){
+    	    case SDL_QUIT:
+    		    run = 0;
+    		    break;
+    	    }
+        }
+	clear_screen();
+	screen_projection_point(0, 0, 10);
+        SDL_RenderPresent(renderer);
+    }
 }
 
 int 
