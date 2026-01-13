@@ -34,39 +34,51 @@
  */ 
 
 #include <SDL2/SDL.h>
-#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define WINDOW_WIDTH  900
+#define WINDOW_HEIGHT 800
 
 SDL_Window    *window;
 SDL_Event      event;
 SDL_Renderer  *renderer;
 
 void 
-window_initalization(){
-	SDL_Init(SDL_INIT_VIDEO);	
-}
+initalization(void){
+    if(SDL_Init(SDL_INIT_VIDEO) != 0){
+	    printf("failed initialazing SDL: %s \n", SDL_GetError());
+	    exit(1);
+    }
 
-void 
-window_creation(){
     window = SDL_CreateWindow("wireframe_renderer",
-                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800,
-                              800, 0);
-	
-}
+                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH,
+                              WINDOW_HEIGHT, 0);
 
-void 
-renderer_initalization(){
+    if(window == NULL){
+	    printf("failed creating a window: %s \n", SDL_GetError());
+	    exit(1);
+    }
+
     renderer = SDL_CreateRenderer(window,
                              -1, 0);
+
+    if(renderer == NULL){
+	    printf("failed creating a renderer: %s \n", SDL_GetError());
+	    exit(1);
+    }
+
 }
 
+void 
+cleanup(void){
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
-int 
-main(void){
-	window_initalization();
-	window_creation();
-	renderer_initalization();
+}
 
-
+void loop(void){
 	int run = 1;
 	while(run){
 	    while(SDL_PollEvent(&event)){
@@ -81,9 +93,15 @@ main(void){
 	    SDL_RenderPresent(renderer);
 
 	}
-	
-	SDL_Quit();
-	return 1;
+
+}
+
+int 
+main(void){
+	initalization();
+	loop();
+	cleanup();
+	return 0;
 }
 
     
