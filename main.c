@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define WINDOW_WIDTH  800
-#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH  1000
+#define WINDOW_HEIGHT 1000
 #define POINT_SIZE    10
 #define FPS           60
 #define DELTA         1.0/FPS
+#define ZOOM          0.5
 
 SDL_Window     *window;
 SDL_Event      event;
@@ -30,9 +31,9 @@ float vertices_cube[8][3] = {
 };
 
 float faces_cube[12][2] = {
-    {0, 1}, {1, 3}, {3, 2}, {2, 0},
-    {4, 5}, {5, 7}, {7, 6}, {6, 4},
-    {0, 4}, {1, 5}, {2, 6}, {3, 7}
+    0, 1, 1, 3, 3, 2, 2, 0,
+    4, 5, 5, 7, 7, 6, 6, 4,
+    0, 4, 1, 5, 2, 6, 3, 7
 };
 
 float vertices[324][3] = {
@@ -525,7 +526,7 @@ void initalization(void);
 void cleanup(void);
 void clear_screen(void);
 void draw_rectangle(float *x, float *y);
-void screen_coordinate_point_normalized(float *x, float *y);
+void get_screen_coordinates(float *x, float *y, float *screen_x, float *screen_y);
 void projection(float x, float y, float z, float *screen_x, float *screen_y);
 void translate_z(float *z, float *_delta_z);
 void rotate_xz(float *x, float *y, float angle);
@@ -593,14 +594,12 @@ draw_rectangle(float *x, float *y){
 void 
 get_screen_coordinates(float *x, float *y, float *screen_x, float *screen_y){
 	*screen_x = (*x + 1) / 2.0 * WINDOW_WIDTH; //didint know literal flaoting point numbers help with such conversions, no need to change everything to floats nice
-	*screen_y = (1 - (*y + 1) / 2.0) * WINDOW_HEIGHT;
+	*screen_y = (1.0 - (*y + 1.0) / 2.0) * WINDOW_HEIGHT;
 }
 
-
-
 void projection(float x, float y, float z, float *screen_x, float *screen_y){
-	float _x = x / z;
-	float _y = y / z;	
+	float _x = x / z * ZOOM;
+	float _y = y / z * ZOOM;	
 
 	get_screen_coordinates(&_x, &_y, screen_x, screen_y);
 }
