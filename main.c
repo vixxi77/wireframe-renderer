@@ -1,17 +1,52 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 800
 #define POINT_SIZE    10
 #define FPS           60
-#define DELTA         1/FPS
+#define DELTA         1.0/FPS
 
 SDL_Window     *window;
 SDL_Event      event;
 SDL_Renderer   *renderer;
-static float delta_z = 0;
+static float delta_z = 1;
+static float angle   = 0;
+/*
+ * TODO: FIX VERTEX COUNT, VERTEX COUNT IS FIRST
+ */
+float vertices[8][3] = {
+	0.25,0.25, 0.25,   
+	-0.25,0.25,0.25, 
+	0.25,-0.25,0.25,
+	-0.25,-0.25,0.25,
+
+	0.25,0.25, -0.25,   
+	-0.25,0.25,-0.25, 
+	0.25,-0.25,-0.25,
+	-0.25,-0.25,-0.25
+};
+
+void initalization(void);
+void cleanup(void);
+void clear_screen(void);
+void draw_rectangle(float *x, float *y);
+void screen_coordinate_point_normalized(float *x, float *y);
+void projection(float x, float y, float z);
+void translate_z(float *z, float *_delta_z);
+void rotate_xz(float *x, float *y, float angle);
+void frame_animation(void);
+void loop(void);
+
+int 
+main(void){
+	initalization();
+	loop();
+	cleanup();
+	return 0;
+}
 
 void 
 initalization(void){
@@ -80,10 +115,36 @@ void projection(float x, float y, float z){
 }
 
 void
+translate_z(float *z, float *_delta_z){
+	*z += *_delta_z;
+}
+
+void 
+rotate_xz(float *x, float *z, float angle){
+	float c = cos(angle);
+	float s = sin(angle);
+
+	float old_x = *x;
+	float old_z = *z;
+
+	*x = old_x * c - old_z * s;
+        *z = old_x * s + old_z * c;	
+}
+
+void
 frame_animation(void){
-	delta_z += 1.0 * DELTA;
+	//delta_z += 1.0 * DELTA;
+	angle   += M_PI * DELTA;
 	clear_screen();
-	projection(0.5, 0 ,1 + delta_z);
+	for(int i = 0; i < sizeof(vertices) / sizeof(vertices[0]); i++){
+		float _x = vertices[i][0];
+		float _y = vertices[i][1];
+		float _z = vertices[i][2];
+
+		rotate_xz(&_x, &_z, angle);
+		translate_z(&_z, &delta_z);
+		projection(_x, _y, _z);
+	}
         SDL_RenderPresent(renderer);
 	SDL_Delay(1000/FPS);
 }
@@ -101,13 +162,4 @@ void loop(void){
 	frame_animation();
     }
 }
-
-int 
-main(void){
-	initalization();
-	loop();
-	cleanup();
-	return 0;
-}
-
     
