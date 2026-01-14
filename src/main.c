@@ -8,7 +8,7 @@
 #define POINT_SIZE    10
 #define FPS           60
 #define DELTA         1.0/FPS
-#define ZOOM          0.5
+#define ZOOM          0.9
 
 SDL_Window     *window;
 SDL_Event      event;
@@ -18,6 +18,11 @@ static float angle   = 0;
 /*
  * TODO: FIX VERTEX COUNT, VERTEX COUNT IS FIRST
  */
+
+
+
+
+
 float vertices_cube[8][3] = {
 	0.25,0.25, 0.25,   
 	-0.25,0.25,0.25, 

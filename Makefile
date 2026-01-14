@@ -6,7 +6,7 @@ CFLAGS = $(shell sdl2-config --cflags --libs)
 
 LDFLAGS = -lm
 
-SRC = *.c
+SRC = $(wildcard src/*.c)
 
 TARGET = wireframe
 
