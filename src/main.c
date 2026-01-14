@@ -13,7 +13,7 @@
 #define POINT_SIZE    10
 #define FPS           60
 #define DELTA         1.0/FPS
-#define ZOOM          1.5
+#define ZOOM          1.0
 
 SDL_Window     *window;
 SDL_Event      event;
@@ -24,7 +24,6 @@ static float angle   = 0;
 //Model *current = &ak47_model;
 Model *current = &penger_model;
 //Model *current = &sink_model;
-//Model *current = &minivan_model;
 
 void initalization(void);
 void cleanup(void);
@@ -42,7 +41,6 @@ void loop(void);
 int 
 main(void){
 	initalization();
-	normalize_model(current);
 	loop();
 	cleanup();
 	return 0;
@@ -85,17 +83,6 @@ void
 clear_screen(void){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-}
-
-void
-draw_rectangle(float *x, float *y){
-    SDL_Rect rectangle = {
-	    .x = (int)*x - (POINT_SIZE / 2),
-	    .y = (int)*y - (POINT_SIZE / 2),
-	    .w = POINT_SIZE,
-	    .h = POINT_SIZE};
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderFillRect(renderer, &rectangle);
 }
 
 void 
@@ -232,6 +219,26 @@ void loop(void){
     	    case SDL_QUIT:
     		    run = 0;
     		    break;
+	    case SDL_KEYDOWN:
+		    switch(event.key.keysym.scancode){
+	            case SDL_SCANCODE_Q:
+			    current = &penger_model;
+			    normalize_model(current);
+			    break;
+	            case SDL_SCANCODE_W:
+			    current = &ak47_model;
+			    normalize_model(current);
+			    break;
+	            case SDL_SCANCODE_E:
+			    current = &sink_model;
+			    normalize_model(current);
+			    break;
+	            case SDL_SCANCODE_R:
+			    current = &minivan_model;
+			    normalize_model(current);
+			    break;
+		    }
+		    break;
     	    }
         }
 	frame_animation(current);
