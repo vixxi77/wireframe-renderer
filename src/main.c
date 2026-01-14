@@ -13,7 +13,7 @@
 #define POINT_SIZE    10
 #define FPS           60
 #define DELTA         1.0/FPS
-#define ZOOM          1.0
+#define ZOOM          1.5
 
 SDL_Window     *window;
 SDL_Event      event;
@@ -21,8 +21,8 @@ SDL_Renderer   *renderer;
 static float delta_z = 1;
 static float angle   = 0;
 
-Model *current = &ak47_model;
-//Model *current = &penger_model;
+//Model *current = &ak47_model;
+Model *current = &penger_model;
 //Model *current = &sink_model;
 //Model *current = &minivan_model;
 
@@ -35,11 +35,14 @@ void projection(float x, float y, float z, float *screen_x, float *screen_y);
 void translate_z(float *z, float *_delta_z);
 void rotate_xz(float *x, float *y, float angle);
 void frame_animation(Model *model);
+void set_bounds(Model *m, float *min_x, float *max_x, float *min_y, float *max_y, float *min_z, float *max_z);
+void normalize_model (Model *m);
 void loop(void);
 
 int 
 main(void){
 	initalization();
+	normalize_model(current);
 	loop();
 	cleanup();
 	return 0;
@@ -176,6 +179,49 @@ frame_animation(Model *m){
 	}
         SDL_RenderPresent(renderer);
 	SDL_Delay(1000/FPS);
+}
+
+void set_bounds(Model *m, float *min_x, float *max_x, float *min_y, float *max_y, float *min_z, float *max_z){
+	*min_x = *min_y = *min_z = 1e9f;
+	*max_x = *max_y = *max_z = -1e9f;
+
+	for (int i = 0; i < m->vertex_count; i++) {
+		float x = m->vertices[i][0];
+		float y = m->vertices[i][1];
+		float z = m->vertices[i][2];
+
+		if (x < *min_x) *min_x = x;
+		if (x > *max_x) *max_x = x;
+		if (y < *min_y) *min_y = y;
+		if (y > *max_y) *max_y = y;
+		if (z < *min_z) *min_z = z;
+		if (z > *max_z) *max_z = z;
+	    }
+}
+
+void normalize_model (Model *m){
+	float min_x, max_x, min_y, max_y, min_z, max_z;
+	set_bounds(m, &min_x, &max_x, &min_y, &max_y, &min_z, &max_z);
+
+	float cx = (min_x + max_x) * 0.5f;
+	float cy = (min_y + max_y) * 0.5f;
+	float cz = (min_z + max_z) * 0.5f;
+
+	float sx = max_x - min_x;
+	float sy = max_y - min_y;
+	float sz = max_z - min_z;
+
+	float max_extent = sx;
+	if (sy > max_extent) max_extent = sy;
+	if (sz > max_extent) max_extent = sz;
+
+	float scale = 1.0f / max_extent;
+
+	for (int i = 0; i < m->vertex_count; i++) {
+	     m->vertices[i][0] = (m->vertices[i][0] - cx) * scale;
+	     m->vertices[i][1] = (m->vertices[i][1] - cy) * scale;
+	     m->vertices[i][2] = (m->vertices[i][2] - cz) * scale;
+	}
 }
 
 void loop(void){
