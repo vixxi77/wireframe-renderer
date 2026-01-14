@@ -24,14 +24,6 @@ static float angle   = 0;
 Model *current = &penger_model;
 //Model *current = &sink_model;
 
-/*
- * TODO: FIX VERTEX COUNT, VERTEX COUNT IS FIRST
- */
-
-
-
-
-
 float vertices_cube[8][3] = {
 	0.25,0.25, 0.25,   
 	-0.25,0.25,0.25, 
@@ -215,4 +207,3 @@ void loop(void){
 	frame_animation(current);
     }
 }
-    
