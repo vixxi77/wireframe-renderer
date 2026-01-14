@@ -24,25 +24,6 @@ static float angle   = 0;
 Model *current = &penger_model;
 //Model *current = &sink_model;
 
-float vertices_cube[8][3] = {
-	0.25,0.25, 0.25,   
-	-0.25,0.25,0.25, 
-	0.25,-0.25,0.25,
-	-0.25,-0.25,0.25,
-
-	0.25,0.25, -0.25,   
-	-0.25,0.25,-0.25, 
-	0.25,-0.25,-0.25,
-	-0.25,-0.25,-0.25
-};
-
-float faces_cube[12][2] = {
-    0, 1, 1, 3, 3, 2, 2, 0,
-    4, 5, 5, 7, 7, 6, 6, 4,
-    0, 4, 1, 5, 2, 6, 3, 7
-};
-
-
 void initalization(void);
 void cleanup(void);
 void clear_screen(void);
@@ -108,7 +89,7 @@ draw_rectangle(float *x, float *y){
 	    .y = (int)*y - (POINT_SIZE / 2),
 	    .w = POINT_SIZE,
 	    .h = POINT_SIZE};
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderFillRect(renderer, &rectangle);
 }
 
