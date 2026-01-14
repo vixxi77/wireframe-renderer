@@ -1,4 +1,6 @@
-float vertices[116][3] = {
+#include "../models/model.h"
+
+float sink_vertices[116][3] = {
     { 0.092764f, 0.323384f, 0.037202f },
     { 0.092764f, 0.323384f, -0.037202f },
     { 0.013851f, 0.323384f, -0.037202f },
@@ -117,7 +119,7 @@ float vertices[116][3] = {
     { 0.211817f, -0.380713f, -0.000000f },
 };
 
-int faces[107][3] = {
+int sink_faces[107][3] = {
     { 0, 1, 2 },
     { 0, 2, 3 },
     { 4, 5, 6 },
@@ -227,3 +229,9 @@ int faces[107][3] = {
     { 103, 94, 100 },
 };
 
+Model sink_model = {
+	sink_vertices,
+	sink_faces,
+	106,
+	107
+};

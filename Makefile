@@ -11,7 +11,7 @@ SRC = $(wildcard src/*.c)
 TARGET = wireframe
 
 all:
-	$(CC) $(CFLAGS) $(LDFLAGS) $(SRC) $(STD) -o $(TARGET)
+	$(CC) $(SRC) $(MODELS) $(STD) $(CFLAGS) $(LDFLAGS) -o $(TARGET)
 
 run:
 	./$(TARGET)
