@@ -6,13 +6,14 @@
 #include "../models/ak47_model.h"
 #include "../models/penger_model.h"
 #include "../models/sink_model.h"
+#include "../models/minivan_model.h"
 
 #define WINDOW_WIDTH  1000
 #define WINDOW_HEIGHT 1000
 #define POINT_SIZE    10
 #define FPS           60
 #define DELTA         1.0/FPS
-#define ZOOM          0.9
+#define ZOOM          1.0
 
 SDL_Window     *window;
 SDL_Event      event;
@@ -20,9 +21,10 @@ SDL_Renderer   *renderer;
 static float delta_z = 1;
 static float angle   = 0;
 
-//Model *current = &ak47_model;
-Model *current = &penger_model;
+Model *current = &ak47_model;
+//Model *current = &penger_model;
 //Model *current = &sink_model;
+//Model *current = &minivan_model;
 
 void initalization(void);
 void cleanup(void);
@@ -100,6 +102,7 @@ get_screen_coordinates(float *x, float *y, float *screen_x, float *screen_y){
 }
 
 void projection(float x, float y, float z, float *screen_x, float *screen_y){
+	if( z < 0.1) z = 0.1;
 	float _x = x / z * ZOOM;
 	float _y = y / z * ZOOM;	
 
