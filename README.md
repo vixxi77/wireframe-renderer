@@ -10,7 +10,7 @@
     <img src="misc/sink.gif" width="600">
 </p>
 
-## BUILDNING & RUNNING
+## BUILDING & RUNNING
 To build the project:
 ```bash
 cd wireframe-renderer/
