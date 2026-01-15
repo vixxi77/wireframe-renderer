@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "../include/wireframe_renderer.h"
-#include "../models/model.h"
 #include "../models/ak47_model.h"
 #include "../models/penger_model.h"
 #include "../models/sink_model.h"

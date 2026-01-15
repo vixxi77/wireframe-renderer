@@ -1,4 +1,4 @@
-#include "../models/model.h"
+#include "../include/model.h"
 
 float ak47_vertices[744][3] = {
     { -0.003049f, 0.074744f, 0.333688f },

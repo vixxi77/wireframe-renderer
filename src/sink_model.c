@@ -1,4 +1,4 @@
-#include "../models/model.h"
+#include "../include/model.h"
 
 float sink_vertices[116][3] = {
     { 0.092764f, 0.323384f, 0.037202f },

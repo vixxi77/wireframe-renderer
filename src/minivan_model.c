@@ -1,4 +1,4 @@
-#include "../models/model.h"
+#include "../include/model.h"
 
 float minivan_vertices[418][3] = {
     { -1.287090f, 0.849221f, -3.451486f },

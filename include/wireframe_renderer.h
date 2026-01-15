@@ -8,7 +8,7 @@
 #define DELTA         1.0/FPS
 #define ZOOM          1.5
 
-#include "../models/model.h"
+#include "../include/model.h"
 
 extern Model *current;
 

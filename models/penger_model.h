@@ -1,7 +1,7 @@
 #ifndef PENGER_H
 #define PENGER_H
 
-#include "../models/model.h"
+#include "../include/model.h"
 
 extern Model penger_model;
 
