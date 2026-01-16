@@ -8,9 +8,6 @@
 #include "../models/sink_model.h"
 #include "../models/minivan_model.h"
 
-SDL_Window     *window;
-SDL_Event      event;
-SDL_Renderer   *renderer;
 static float delta_z = 1;
 static float angle   = 0;
 
@@ -19,54 +16,43 @@ Model *current = &penger_model;
 //Model *current = &sink_model;
 //Model *current = &minivan_model;
 
-void 
-initalization(void){
+int 
+initalization(App *app){
     if(SDL_Init(SDL_INIT_VIDEO) != 0){
 	    printf("failed initialazing SDL: %s \n", SDL_GetError());
-	    exit(1);
+	    return 1;
     }
 
-    window = SDL_CreateWindow("wireframe_renderer",
+    app->window = SDL_CreateWindow("wireframe_renderer",
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH,
                               WINDOW_HEIGHT, 0);
 
-    if(window == NULL){
+    if(app->window == NULL){
 	    printf("failed creating a window: %s \n", SDL_GetError());
-	    exit(1);
+	    return 1;
     }
 
-    renderer = SDL_CreateRenderer(window,
+    app->renderer = SDL_CreateRenderer(app->window,
                              -1, 0);
 
-    if(renderer == NULL){
+    if(app->renderer == NULL){
 	    printf("failed creating a renderer: %s \n", SDL_GetError());
-	    exit(1);
+	    return 1;
     }
-
+    return 0;
 }
 
 void 
-cleanup(void){
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+cleanup(App *app){
+    SDL_DestroyRenderer(app->renderer);
+    SDL_DestroyWindow(app->window);
     SDL_Quit();
 }
 
 void
-clear_screen(void){
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-}
-
-void
-draw_rectangle(float *x, float *y){
-    SDL_Rect rectangle = {
-	    .x = (int)*x - (POINT_SIZE / 2),
-	    .y = (int)*y - (POINT_SIZE / 2),
-	    .w = POINT_SIZE,
-	    .h = POINT_SIZE};
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderFillRect(renderer, &rectangle);
+clear_screen(App *app){
+    SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
+    SDL_RenderClear(app->renderer);
 }
 
 void 
@@ -101,16 +87,15 @@ rotate_xz(float *x, float *z, float angle){
 }
 
 void
-draw_line(float *x1, float *y1,  float *x2, float *y2){
-	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-	SDL_RenderDrawLineF(renderer, *x1, *y1, *x2, *y2);
+draw_line(App *app, float x1, float y1,  float x2, float y2){
+	SDL_RenderDrawLineF(app->renderer, x1, y1, x2, y2);
 }
 
 void
-frame_animation(Model *m){
+frame_animation(App *app, Model *m){
 	//delta_z += 1.0 * DELTA;
 	angle   += 0.5 * M_PI * DELTA;
-	clear_screen();
+	clear_screen(app);
 
 	for(int i = 0; i < m->face_count; i++){
 		int _a = m->faces[i][0];
@@ -144,11 +129,12 @@ frame_animation(Model *m){
 		float screen_x3, screen_y3;
 		projection(_x3, _y3, _z3, &screen_x3, &screen_y3);
 
-		draw_line(&screen_x1, &screen_y1, &screen_x2, &screen_y2);
-		draw_line(&screen_x2, &screen_y2, &screen_x3, &screen_y3);
-		draw_line(&screen_x3, &screen_y3, &screen_x1, &screen_y1);
+		SDL_SetRenderDrawColor(app->renderer, 0, 255, 0, 255);
+		draw_line(app, screen_x1, screen_y1, screen_x2, screen_y2);
+		draw_line(app, screen_x2, screen_y2, screen_x3, screen_y3);
+		draw_line(app, screen_x3, screen_y3, screen_x1, screen_y1);
 	}
-        SDL_RenderPresent(renderer);
+        SDL_RenderPresent(app->renderer);
 	SDL_Delay(1000/FPS);
 }
 
@@ -197,17 +183,17 @@ void normalize_model (Model *m){
 	}
 }
 
-void loop(void){
+void loop(App *app){
     int run = 1;
     while(run){
-        while(SDL_PollEvent(&event)){
-    	    switch(event.type){
+        while(SDL_PollEvent(&app->event)){
+    	    switch(app->event.type){
     	    case SDL_QUIT:
     		    run = 0;
     		    break;
     	    }
         }
-	frame_animation(current);
+	frame_animation(app, current);
     }
 }
 
