@@ -1,5 +1,9 @@
 # WIREFRAME DEMO
 
+### TODO
+
+- Vertex rendering refactor 
+
 <p align="center">
     <img src="misc/penger.gif" width="600">
 </p>
