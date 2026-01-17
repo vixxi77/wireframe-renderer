@@ -2,16 +2,19 @@ CC = gcc
 
 STD = -std=c99
 
-CFLAGS = $(shell sdl2-config --cflags --libs)
+CFLAGS = -Wall -Wextra $(STD) $(shell sdl2-config --cflags)
 
-LDFLAGS = -lm
+LDFLAGS = $(shell sdl2-config --libs) -lm
+
 
 SRC = $(wildcard src/*.c)
 
 TARGET = wireframe
 
-all:
-	$(CC) $(SRC) $(STD) $(CFLAGS) $(LDFLAGS) -o $(TARGET)
+all: $(TARGET)
+	
+$(TARGET):
+	$(CC) $(SRC) $(CFLAGS) $(LDFLAGS) -o $(TARGET)
 
 run:
 	./$(TARGET)
