@@ -9,18 +9,20 @@ LDFLAGS = $(shell sdl2-config --libs) -lm
 
 SRC = $(wildcard src/*.c)
 
+MODELS = $(wildcard models/*.c)
+
 TARGET = wireframe
 
 all: $(TARGET)
 	
 $(TARGET):
-	$(CC) $(SRC) $(CFLAGS) $(LDFLAGS) -o $(TARGET)
+	$(CC) $(SRC) $(MODELS) $(CFLAGS) $(LDFLAGS) -o $(TARGET)
 
 run:
 	./$(TARGET)
 
 
 clean:
-	rm  $(TARGET)
+	rm -f $(TARGET)
 
 
