@@ -1,4 +1,4 @@
-#include "../include/model.h"
+#include "model.h"
 
 float penger_vertices[324][3] = {
 {-0.086914, 0.277547, 0.400041},

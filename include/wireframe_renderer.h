@@ -8,7 +8,7 @@
 #define DELTA         1.0/FPS
 #define ZOOM          1.5
 
-#include "../include/model.h"
+#include "model.h"
 #include <SDL2/SDL.h>
 
 extern Model *current;

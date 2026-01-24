@@ -2,7 +2,7 @@ CC = gcc
 
 STD = -std=c99
 
-CFLAGS = -Wall -Wextra $(STD) $(shell sdl2-config --cflags)
+CFLAGS = -Wall -Wextra $(STD) $(shell sdl2-config --cflags) -Iinclude -Imodels
 
 LDFLAGS = $(shell sdl2-config --libs) -lm
 

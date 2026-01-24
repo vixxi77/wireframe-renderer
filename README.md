@@ -14,6 +14,13 @@
     <img src="misc/sink.gif" width="600">
 </p>
 
+## DEPENDENCIES
+- SDL2 
+Linux:
+```bash
+sudo apt install libsdl2-dev
+```
+
 ## BUILDING & RUNNING
 To build the project:
 ```bash

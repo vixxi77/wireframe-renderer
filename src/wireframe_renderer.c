@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "../include/wireframe_renderer.h"
-#include "../models/ak47_model.h"
-#include "../models/penger_model.h"
-#include "../models/sink_model.h"
-#include "../models/minivan_model.h"
+#include "wireframe_renderer.h"
+#include "ak47_model.h"
+#include "penger_model.h"
+#include "sink_model.h"
+#include "minivan_model.h"
 
 static float delta_z = 1;
 static float angle   = 0;

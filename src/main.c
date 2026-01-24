@@ -1,4 +1,4 @@
-#include "../include/wireframe_renderer.h"
+#include "wireframe_renderer.h"
 #include <stdlib.h>
 
 int 
