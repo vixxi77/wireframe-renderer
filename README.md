@@ -15,8 +15,8 @@
 </p>
 
 ## DEPENDENCIES
-- SDL2
-    Linux:
+- SDL2<br>
+Linux:
 ```bash
 sudo apt install libsdl2-dev
 ```
