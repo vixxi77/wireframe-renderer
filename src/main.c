@@ -1,13 +1,17 @@
 #include "wireframe_renderer.h"
-#include <stdlib.h>
 
 int 
 main(void){
 	App app = {0};
 
-	if(initalization(&app)) exit(EXIT_FAILURE);
+	if(initalization(&app)) return EXIT_FAILURE;
 	normalize_model(current);
-	loop(&app);
+
+	app.running = 1;
+	while(app.running){
+		frame(&app);
+	}
+
 	cleanup(&app);
 	return 0;
 }

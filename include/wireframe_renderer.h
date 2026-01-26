@@ -15,8 +15,8 @@ extern Model *current;
 
 typedef struct {
 	SDL_Window   *window;
-	SDL_Event     event;
 	SDL_Renderer *renderer;
+	int running;
 } App;
 
 int  initalization(App *app);
@@ -30,6 +30,6 @@ void frame_animation(App *app, Model *model);
 void set_bounds(Model *m, float *min_x, float *max_x, float *min_y, float *max_y, float *min_z, float *max_z);
 void normalize_model (Model *m);
 void draw_line(App *app, float x1, float y1, float x2, float y2);
-void loop(App *app);
+void frame(App *app);
 
 #endif

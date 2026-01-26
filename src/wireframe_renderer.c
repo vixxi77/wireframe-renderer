@@ -20,7 +20,7 @@ int
 initalization(App *app){
     if(SDL_Init(SDL_INIT_VIDEO) != 0){
 	    printf("failed initialazing SDL: %s \n", SDL_GetError());
-	    return 1;
+	    return -1;
     }
 
     app->window = SDL_CreateWindow("wireframe_renderer",
@@ -29,7 +29,8 @@ initalization(App *app){
 
     if(app->window == NULL){
 	    printf("failed creating a window: %s \n", SDL_GetError());
-	    return 1;
+	    cleanup(app);
+	    return -1;
     }
 
     app->renderer = SDL_CreateRenderer(app->window,
@@ -37,15 +38,23 @@ initalization(App *app){
 
     if(app->renderer == NULL){
 	    printf("failed creating a renderer: %s \n", SDL_GetError());
-	    return 1;
+	    cleanup(app);
+	    return -1;
     }
     return 0;
 }
 
 void 
 cleanup(App *app){
-    SDL_DestroyRenderer(app->renderer);
-    SDL_DestroyWindow(app->window);
+   if(app->renderer){
+	    SDL_DestroyRenderer(app->renderer);
+	    app->renderer = NULL;
+   }
+
+   if(app->window){
+	    SDL_DestroyWindow(app->window);
+	    app->window = NULL;
+    }
     SDL_Quit();
 }
 
@@ -183,17 +192,14 @@ void normalize_model (Model *m){
 	}
 }
 
-void loop(App *app){
-    int run = 1;
-    while(run){
-        while(SDL_PollEvent(&app->event)){
-    	    switch(app->event.type){
-    	    case SDL_QUIT:
-    		    run = 0;
-    		    break;
+void frame(App *app){
+	SDL_Event event;
+        while(SDL_PollEvent(&event)){
+		if(event.type == SDL_QUIT){
+			app->running = 0;
+		}
     	    }
-        }
-	frame_animation(app, current);
-    }
+     frame_animation(app, current);
 }
+
 
